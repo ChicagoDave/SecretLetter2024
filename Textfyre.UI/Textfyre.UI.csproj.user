@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Page Update="Controls\Art.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\BookCover.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Bookmark.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Demographic\Enter.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\FlipButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\FyreDocument.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Hints\Hint.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Hints\HintGroup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Hints\HintPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Input.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\IODialog\Confirm.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\IODialog\File.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\IODialog\Notes.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\IODialog\Restore.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\IODialog\Save.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\IODialog\Transcript.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Manual\ManualControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Mapping\Connection.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Mapping\DragHand.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Mapping\Location.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Mapping\Map.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\More.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\SpeechBubble\Bubble.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\StoryAid.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\StoryScroller.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\TableOfContent.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\TextButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\TextfyreBook.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\TextfyreBookPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Topic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\UserSettings\ColorPicker.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\UserSettings\ColorPickerButton.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\UserSettings\FontPicker.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\UserSettings\FontsPreview.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\UserSettings\UserSettingsForm.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\Wait.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Master.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Page.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Pages\Story.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>
