@@ -6,6 +6,10 @@
     <DefineSilverlight>true</DefineSilverlight>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="7Zip\Common\CRC.cs" />
     <Compile Include="7Zip\Common\InBuffer.cs" />
@@ -67,6 +71,7 @@
     <Compile Include="Controls\UserSettings\FontPicker.xaml.cs" />
     <Compile Include="Controls\UserSettings\FontsPreview.xaml.cs" />
     <Compile Include="Controls\UserSettings\UserSettingsForm.xaml.cs" />
+    <Compile Include="Controls\Utility.cs" />
     <Compile Include="Controls\Wait.xaml.cs" />
     <Compile Include="Current\Application.cs" />
     <Compile Include="Current\Font.cs" />

@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Linq;
+using System.IO;
+using Textfyre.UI.Controls;
 
 namespace Textfyre.UI {
     public static class UserSettings {
@@ -67,20 +69,24 @@ namespace Textfyre.UI {
             if (AvailableFontDefs.Count > 0)
                 return;
 
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/Fonts.xml"));
+            using (Stream stream = Utility.GetFileStream("Fonts.xml"))
+            {
+                XDocument x = XDocument.Load(stream);
+                var fonts = from font in x.Descendants("Font") select font;
 
-            var fonts = from font in x.Descendants("Font") select font;
+                foreach (var font in fonts)
+                {
+                    bool iswinonly = AttributeExists(font, "IsWinOnly") ? bool.Parse(font.Attribute("IsWinOnly").Value) : false;
 
-            foreach (var font in fonts) {
-                bool iswinonly = AttributeExists(font, "IsWinOnly") ? bool.Parse(font.Attribute("IsWinOnly").Value) : false;
+                    if (!iswinonly || (iswinonly && Current.Application.Platform == Textfyre.UI.Current.Platform.Windows))
+                    {
 
-                if (!iswinonly || (iswinonly && Current.Application.Platform == Textfyre.UI.Current.Platform.Windows)) {
-
-                    AvailFontDef fd = new AvailFontDef();
-                    fd.Title = AttributeExists(font, "Title") ? font.Attribute("Title").Value : "";
-                    fd.Source = AttributeExists(font, "Source") ? font.Attribute("Source").Value : "";
-                    fd.FontFamily = AttributeExists(font, "FontFamily") ? font.Attribute("FontFamily").Value : "";
-                    AvailableFontDefs.Add(fd);
+                        AvailFontDef fd = new AvailFontDef();
+                        fd.Title = AttributeExists(font, "Title") ? font.Attribute("Title").Value : "";
+                        fd.Source = AttributeExists(font, "Source") ? font.Attribute("Source").Value : "";
+                        fd.FontFamily = AttributeExists(font, "FontFamily") ? font.Attribute("FontFamily").Value : "";
+                        AvailableFontDefs.Add(fd);
+                    }
                 }
             }
         }

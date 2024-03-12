@@ -12,6 +12,8 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.IO;
+using Textfyre.UI.Controls;
 
 namespace Textfyre.UI.DocSystem
 {
@@ -90,47 +92,51 @@ namespace Textfyre.UI.DocSystem
             WordDefs = new System.Collections.Generic.List<WD>();
             WordDefIDs = new System.Collections.Generic.Dictionary<string, string>();
 
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/WordDefinition.xml"));
-
-            var worddefs = from worddef in x.Descendants("WordDef") select worddef;
-
-            int id = 0;
-            foreach (var worddef in worddefs)
+            using (Stream stream = Utility.GetFileStream("WordDefinition.xml"))
             {
-                string description = worddef.Element("Description").Value;
-                WordDefIDs.Add(id.ToString(), description);
-                
-                var words = from word in worddef.Descendants("Word") select word;
-                foreach (var word in words)
-                {
-                    string wordVal = Key(word.Value);
-                    WD wd = new WD();
-                    wd.Word = wordVal;
-                    wd.ID = id.ToString();
+                XDocument x = XDocument.Load(stream);
 
-                    WordDefs.Add(wd);
+                var worddefs = from worddef in x.Descendants("WordDef") select worddef;
+
+                int id = 0;
+                foreach (var worddef in worddefs)
+                {
+                    string description = worddef.Element("Description").Value;
+                    WordDefIDs.Add(id.ToString(), description);
+
+                    var words = from word in worddef.Descendants("Word") select word;
+                    foreach (var word in words)
+                    {
+                        string wordVal = Key(word.Value);
+                        WD wd = new WD();
+                        wd.Word = wordVal;
+                        wd.ID = id.ToString();
+
+                        WordDefs.Add(wd);
+                    }
+
+                    id++;
                 }
 
-                id++;
+                WordDefs.Sort(
+                    delegate (
+                    WD wd1, WD wd2)
+                    { return wd2.Word.Length.CompareTo(wd1.Word.Length); }
+                    );
+
+
+                //// Sort List to get longest words first.
+                //var items = from k in wordDefsTmp.Keys
+                //            orderby k.Length descending
+                //            select k;
+
+
+                //foreach (string key in wordDefsTmp.Keys)
+                //{
+                //    WordDefs.Add(key, wordDefsTmp[key]);
+                //}
+
             }
-
-            WordDefs.Sort(
-                delegate(
-                WD wd1, WD wd2) { return wd2.Word.Length.CompareTo(wd1.Word.Length); }
-                );
-
-
-            //// Sort List to get longest words first.
-            //var items = from k in wordDefsTmp.Keys
-            //            orderby k.Length descending
-            //            select k;
-
-
-            //foreach (string key in wordDefsTmp.Keys)
-            //{
-            //    WordDefs.Add(key, wordDefsTmp[key]);
-            //}
-
         }
 
     }

@@ -6,6 +6,10 @@
     <DefineSilverlight>true</DefineSilverlight>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="App.xaml.cs" />
     <Compile Include="Page.xaml.cs" />

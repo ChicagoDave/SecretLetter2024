@@ -5,6 +5,13 @@
               Background="#FFF9EAD6"
              >
     <Grid x:Name="LayoutRoot" Background="#FFF9EAD6" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <!-- Set the desired properties for the Grid style -->
+                <Setter Property="Margin" Value="0" />
+                <!-- Add more setters for other properties as needed -->
+            </Style>
+        </Grid.Style>
         <pg:Master x:Name="MasterPage" HorizontalAlignment="Left" VerticalAlignment="Top" />
     </Grid>
 </UserControl>

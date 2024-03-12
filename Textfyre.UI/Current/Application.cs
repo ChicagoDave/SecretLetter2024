@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Windows.Markup;
 using System.Windows.Resources;
 using System.IO;
+using Textfyre.UI.Controls;
 
 namespace Textfyre.UI.Current
 {
@@ -141,14 +142,17 @@ namespace Textfyre.UI.Current
 
         public static UIElement GetImageXaml(string relativePath)
         {
-            StreamResourceInfo sri = System.Windows.Application.GetResourceStream(Current.Application.GetResUri(relativePath)).Result;
+            string exeFolder = AppDomain.CurrentDomain.BaseDirectory;
+            string imageFilePath = System.IO.Path.Combine(exeFolder, relativePath);
+
             string xaml = string.Empty;
-            using (StreamReader reader = new StreamReader(sri.Stream) )
+            using (StreamReader reader = new StreamReader(imageFilePath) )
             {
                 xaml = reader.ReadToEnd();
             }
             return XamlReader.Load(xaml) as UIElement;
         }
         #endregion
+
     }
 }

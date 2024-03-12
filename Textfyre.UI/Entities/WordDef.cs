@@ -12,6 +12,8 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.IO;
+using Textfyre.UI.Controls;
 
 namespace Textfyre.UI.Entities
 {
@@ -57,21 +59,23 @@ namespace Textfyre.UI.Entities
                 return;
 
             WordDefs = new System.Collections.Generic.Dictionary<string, string>();
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/WordDefinition.xml"));
 
-            var worddefs = from worddef in x.Descendants("WordDef") select worddef;
-
-            foreach (var worddef in worddefs)
+            using (Stream stream = Utility.GetFileStream("WordDefinition.xml"))
             {
-                var words = from word in worddef.Descendants("Word") select word;
-                foreach (var word in words)
+                XDocument x = XDocument.Load(stream);
+                var worddefs = from worddef in x.Descendants("WordDef") select worddef;
+
+                foreach (var worddef in worddefs)
                 {
-                    string wordVal = Key(word.Value);
-                    string description = worddef.Element("Description").Value;
-                    WordDefs.Add(wordVal, description);
+                    var words = from word in worddef.Descendants("Word") select word;
+                    foreach (var word in words)
+                    {
+                        string wordVal = Key(word.Value);
+                        string description = worddef.Element("Description").Value;
+                        WordDefs.Add(wordVal, description);
+                    }
                 }
             }
-
         }
 
     }

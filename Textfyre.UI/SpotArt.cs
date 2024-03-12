@@ -10,6 +10,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Linq;
+using System.IO;
+using Textfyre.UI.Controls;
 
 namespace Textfyre.UI
 {
@@ -23,22 +25,25 @@ namespace Textfyre.UI
             _dic = new System.Collections.Generic.Dictionary<string, string>();
             _dicShowText = new System.Collections.Generic.Dictionary<string, bool>();
 
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/Arts.xml"));
-
-            var arts = from art in x.Descendants("Art") select art;
-            foreach (var art in arts)
+            using (Stream stream = Utility.GetFileStream("Arts.xml"))
             {
-                if (art.Attribute("TextMatch") != null)
+                XDocument x = XDocument.Load(stream);
+
+                var arts = from art in x.Descendants("Art") select art;
+                foreach (var art in arts)
                 {
-                    string id = art.Attribute("ID").Value;
-                    string text = art.Attribute("TextMatch").Value;
-                    _dic.Add(id, text);
+                    if (art.Attribute("TextMatch") != null)
+                    {
+                        string id = art.Attribute("ID").Value;
+                        string text = art.Attribute("TextMatch").Value;
+                        _dic.Add(id, text);
 
-                    bool showText = true;
-                    if (art.Attribute("ShowText") != null)
-                        showText = bool.Parse(art.Attribute("ShowText").Value);
+                        bool showText = true;
+                        if (art.Attribute("ShowText") != null)
+                            showText = bool.Parse(art.Attribute("ShowText").Value);
 
-                    _dicShowText.Add(id, showText);
+                        _dicShowText.Add(id, showText);
+                    }
                 }
             }
         }

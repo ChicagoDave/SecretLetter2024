@@ -4,7 +4,14 @@
     Loaded="OnLoaded" MouseLeftButtonDown="OnMouseDown" MouseLeftButtonUp="OnMouseUp"
     MouseMove="OnMouseMove" MouseLeave="OnMouseLeave"   >
 	<Grid x:Name="mainGrid">
-		<!--Page 2 begin-->
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <!-- Set the desired properties for the Grid style -->
+                <Setter Property="Margin" Value="0" />
+                <!-- Add more setters for other properties as needed -->
+            </Style>
+        </Grid.Style>
+        <!--Page 2 begin-->
 		<ContentControl x:Name="page2" />
 		<!--Page 2 end-->
 		<Canvas Opacity="1" x:Name="nextPageShadowCanvas" Visibility="Collapsed">
@@ -43,8 +50,8 @@
 				</LinearGradientBrush>
 			</Canvas.Background>
 		</Canvas>
-		<Grid x:Name="rectangleVisible">
-			<Grid.RenderTransform>
+        <Grid x:Name="rectangleVisible">
+            <Grid.RenderTransform>
 				<TransformGroup>
 					<TranslateTransform x:Name="rectangleTranslate" />
 					<RotateTransform x:Name="rectangleRotate" />
@@ -52,7 +59,11 @@
 			</Grid.RenderTransform>
 			<Grid.Clip>
 				<PathGeometry x:Name="clippingFigure">
-					<PathFigure IsClosed="True" />
+                    <PathGeometry.Figures>
+                        <PathFigureCollection>
+                            <PathFigure IsClosed="True" />
+                        </PathFigureCollection>
+                    </PathGeometry.Figures>
 				</PathGeometry>
 			</Grid.Clip>
 			<!--Page 1 begin-->

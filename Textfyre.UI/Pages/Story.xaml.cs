@@ -446,12 +446,19 @@ namespace Textfyre.UI.Pages
                 try
                 {
                     string filePath = _saveFile.Save();
-                    IsolatedStorageFile IsoStorageFile =
-                        System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForApplication();
 
-                    Stream isoStream = new IsolatedStorageFileStream(filePath,
-                                    FileMode.OpenOrCreate, Entities.SaveFile.IsoFile);
-                    e.Stream = new CompressingStream(isoStream);
+                    IsolatedStorageSettings isoSettings = IsolatedStorageSettings.ApplicationSettings;
+
+                    if (isoSettings.Contains(filePath))
+                    {
+                        string serializedData = isoSettings[filePath].ToString();
+                        byte[] data = Convert.FromBase64String(serializedData);
+                        e.Stream = new MemoryStream(data);
+                    }
+                    else
+                    {
+                        e.Stream = new MemoryStream();
+                    }
                 }
                 catch( Exception exp )
                 {
@@ -501,14 +508,20 @@ namespace Textfyre.UI.Pages
             {
                 try
                 {
-                string filePath = _saveFile.BinaryStoryFilePath;
-  
-                IsolatedStorageFile IsoStorageFile =
-                    System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForApplication();
+                    string filePath = _saveFile.BinaryStoryFilePath;
 
-                Stream isoStream = new IsolatedStorageFileStream(filePath,
-                                FileMode.Open, Entities.SaveFile.IsoFile);
-                e.Stream = new DecompressingStream(isoStream);
+                    IsolatedStorageSettings isoSettings = IsolatedStorageSettings.ApplicationSettings;
+
+                    if (isoSettings.Contains(filePath))
+                    {
+                        string serializedData = isoSettings[filePath].ToString();
+                        byte[] data = Convert.FromBase64String(serializedData);
+                        e.Stream = new MemoryStream(data);
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException("The specified file was not found in isolated storage.");
+                    }
                 }
                 catch (Exception exp)
                 {

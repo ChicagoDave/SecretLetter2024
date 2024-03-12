@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,9 @@ using System.Windows.Shapes;
 using System.Xml.Linq;
 using System.Linq;
 using System.Reflection;
+using Textfyre.UI.Controls;
+
+
 
 namespace Textfyre.UI
 {
@@ -88,41 +92,44 @@ namespace Textfyre.UI
 
         public static void Init()
         {
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/Settings.xml"));
-
-            var settings = from setting in x.Descendants("Setting") select setting;
-
-            foreach (var setting in settings)
+            using (Stream stream = Utility.GetFileStream("Settings.xml"))
             {
-                string key = setting.Attribute("Key").Value;
-                string value = setting.Attribute("Value").Value;
+                XDocument x = XDocument.Load(stream);
 
-                FieldInfo fi = typeof(Settings).GetField(key);
+                var settings = from setting in x.Descendants("Setting") select setting;
 
-                if (fi.FieldType == typeof(int))
+                foreach (var setting in settings)
                 {
-                    Settings set = new Settings();
-                    fi.SetValue(set, int.Parse(value));
-                }
-                else if (fi.FieldType == typeof(double))
-                {
-                    Settings set = new Settings();
-                    fi.SetValue(set, double.Parse(value));
-                }
-                else if (fi.FieldType == typeof(bool))
-                {
-                    Settings set = new Settings();
-                    fi.SetValue(set, bool.Parse(value));
-                }
-                else if (fi.FieldType == typeof(string))
-                {
-                    Settings set = new Settings();
-                    fi.SetValue(set, value);
-                }
-                else if (fi.FieldType == typeof(PagingMechanismType))
-                {
-                    Settings set = new Settings();
-                    fi.SetValue( set, Enum.Parse( typeof(PagingMechanismType), value, true ) );
+                    string key = setting.Attribute("Key").Value;
+                    string value = setting.Attribute("Value").Value;
+
+                    FieldInfo fi = typeof(Settings).GetField(key);
+
+                    if (fi.FieldType == typeof(int))
+                    {
+                        Settings set = new Settings();
+                        fi.SetValue(set, int.Parse(value));
+                    }
+                    else if (fi.FieldType == typeof(double))
+                    {
+                        Settings set = new Settings();
+                        fi.SetValue(set, double.Parse(value));
+                    }
+                    else if (fi.FieldType == typeof(bool))
+                    {
+                        Settings set = new Settings();
+                        fi.SetValue(set, bool.Parse(value));
+                    }
+                    else if (fi.FieldType == typeof(string))
+                    {
+                        Settings set = new Settings();
+                        fi.SetValue(set, value);
+                    }
+                    else if (fi.FieldType == typeof(PagingMechanismType))
+                    {
+                        Settings set = new Settings();
+                        fi.SetValue(set, Enum.Parse(typeof(PagingMechanismType), value, true));
+                    }
                 }
             }
             

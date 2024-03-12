@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,25 +74,28 @@ namespace Textfyre.UI.Controls.Mapping
             if (_locations != null)
                 return;
 
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/Map.xml"));
-
-            _locations = new Textfyre.UI.Entities.MapLocationCollection();
-            _connections = new Textfyre.UI.Entities.MapConnectionCollection();
-
-            var connections = from connection in x.Descendants("Connection") select connection;
-            foreach (var connection in connections)
+            using (Stream stream = Utility.GetFileStream("Map.xml"))
             {
-                Entities.MapConnection mapCon = new Textfyre.UI.Entities.MapConnection(connection);
-                _connections.Add(mapCon);
-            }
-            
-            var locations = from location in x.Descendants("Location") select location;
-            foreach (var location in locations)
-            {
-                Entities.MapLocation mapLoc = new Textfyre.UI.Entities.MapLocation(location, _connections);
-                _locations.Add(mapLoc);
-                _cvContent.Children.Add(mapLoc.UIControl);
-                
+                XDocument x = XDocument.Load(stream);
+
+                _locations = new Textfyre.UI.Entities.MapLocationCollection();
+                _connections = new Textfyre.UI.Entities.MapConnectionCollection();
+
+                var connections = from connection in x.Descendants("Connection") select connection;
+                foreach (var connection in connections)
+                {
+                    Entities.MapConnection mapCon = new Textfyre.UI.Entities.MapConnection(connection);
+                    _connections.Add(mapCon);
+                }
+
+                var locations = from location in x.Descendants("Location") select location;
+                foreach (var location in locations)
+                {
+                    Entities.MapLocation mapLoc = new Textfyre.UI.Entities.MapLocation(location, _connections);
+                    _locations.Add(mapLoc);
+                    _cvContent.Children.Add(mapLoc.UIControl);
+
+                }
             }
         }
 

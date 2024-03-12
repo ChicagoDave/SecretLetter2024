@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.IO.IsolatedStorage;
-using System.Collections.Generic;
-using System.Windows.Threading;
 
 namespace Textfyre.UI.Entities
 {
@@ -20,211 +11,133 @@ namespace Textfyre.UI.Entities
     {
         #region :: Title ::
         private string _title;
-        public string Title {
-            get {
-                return _title;
-            }
-            set {
-                _title = value;
-            }
+        public string Title
+        {
+            get { return _title; }
+            set { _title = value; }
         }
         #endregion
 
         #region :: Description ::
         private string _description;
-        public string Description {
-            get {
-                return _description;
-            }
-            set {
-                _description = value;
-            }
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; }
         }
         #endregion
 
         #region :: SaveTime ::
         public DateTime _saveTime;
-		public DateTime SaveTime {
-			get {
-                return _saveTime;
-			}
-			set {
-                _saveTime = value;
-			}
+        public DateTime SaveTime
+        {
+            get { return _saveTime; }
+            set { _saveTime = value; }
         }
         #endregion
 
         #region :: Filename ::
-        private string _filename = string.Empty; 
+        private string _filename = string.Empty;
         public string Filename
         {
-            get
-            {
-                return _filename;
-            }
-            set
-            {
-                _filename = value;
-            }
+            get { return _filename; }
+            set { _filename = value; }
         }
         #endregion
 
         #region :: GameFileVersion ::
-        private string _gameFileVersion = String.Empty;
+        private string _gameFileVersion = string.Empty;
         public string GameFileVersion
         {
-            get
-            {
-                return _gameFileVersion;
-            }
-            set
-            {
-                _gameFileVersion = value;
-            }
+            get { return _gameFileVersion; }
+            set { _gameFileVersion = value; }
         }
         #endregion
 
         #region :: FyreXml ::
-        private string _fyreXml = String.Empty;
+        private string _fyreXml = string.Empty;
         public string FyreXml
         {
-            get
-            {
-                return _fyreXml;
-            }
-            set
-            {
-                _fyreXml = value;
-            }
+            get { return _fyreXml; }
+            set { _fyreXml = value; }
         }
         #endregion
 
         #region :: Transcript ::
-        //[System.Xml.Serialization.XmlIgnore()]
-        private string _transcript = String.Empty;
+        private string _transcript = string.Empty;
         public string Transcript
         {
-            get
-            {
-                return _transcript;
-            }
-            set
-            {
-                _transcript = value;
-            }
+            get { return _transcript; }
+            set { _transcript = value; }
         }
-
-
-
-
         #endregion
 
         #region :: Chapter ::
-        private string _chapter = String.Empty;
+        private string _chapter = string.Empty;
         public string Chapter
         {
-            get
-            {
-                return _chapter;
-            }
-            set
-            {
-                _chapter = value;
-            }
+            get { return _chapter; }
+            set { _chapter = value; }
         }
         #endregion
 
         #region :: Theme ::
-        private string _theme = String.Empty;
+        private string _theme = string.Empty;
         public string Theme
         {
-            get
-            {
-                return _theme;
-            }
-            set
-            {
-                _theme = value;
-            }
+            get { return _theme; }
+            set { _theme = value; }
         }
         #endregion
 
         #region :: StoryTitle ::
-        private string _storyTitle = String.Empty;
+        private string _storyTitle = string.Empty;
         public string StoryTitle
         {
-            get
-            {
-                return _storyTitle;
-            }
-            set
-            {
-                _storyTitle = value;
-            }
+            get { return _storyTitle; }
+            set { _storyTitle = value; }
         }
         #endregion
 
         #region :: Hints ::
-        private string _hints = String.Empty;
+        private string _hints = string.Empty;
         public string Hints
         {
-            get
-            {
-                return _hints;
-            }
-            set
-            {
-                _hints = value;
-            }
+            get { return _hints; }
+            set { _hints = value; }
         }
         #endregion
 
         public void Delete()
         {
-            if (_filename.Length == 0)
+            if (string.IsNullOrEmpty(_filename))
                 return;
 
-            IsolatedStorageFile isoFile = IsoFile;
-            string filepath = _dir + @"\" + _filename;
+            IsolatedStorageSettings isoSettings = IsolatedStorageSettings.ApplicationSettings;
 
-            if (isoFile.FileExists(filepath + ".fvt"))
-                isoFile.DeleteFile(filepath + ".fvt");
+            if (isoSettings.Contains(_filename + ".fvt"))
+                isoSettings.Remove(_filename + ".fvt");
 
-            if (isoFile.FileExists(filepath + ".fvq"))
-                isoFile.DeleteFile(filepath + ".fvq");
-            
+            if (isoSettings.Contains(_filename + ".fvq"))
+                isoSettings.Remove(_filename + ".fvq");
+
+            //isoSettings.Save();
         }
 
-        /// <summary>
-        /// Returns filepath to store binary story file.
-        /// </summary>
-        /// <returns></returns>
         public string Save()
         {
-
-            if (_filename.Length == 0)
+            if (string.IsNullOrEmpty(_filename))
             {
                 _filename = FindFilename();
             }
-            
-            Init();
-            string filepath = _dir + @"\" + _filename;
 
-            using (IsolatedStorageFile isoFile = IsoFile)
-            {
-                using (IsolatedStorageFileStream stream =
-                new IsolatedStorageFileStream( filepath + ".fvt", FileMode.Create, isoFile))
-                {
-                    using (CompressingStream cstream = new CompressingStream(stream))
-                    using (StreamWriter writer = new StreamWriter(cstream))
-                    {
-                        writer.Write( Serialize(this) );
-                    }
-                }
-            }
+            string filepath = _filename;
+
+            IsolatedStorageSettings isoSettings = IsolatedStorageSettings.ApplicationSettings;
+            isoSettings[filepath + ".fvt"] = Serialize(this);
+            //isoSettings.Save();
 
             return filepath + ".fvq";
-
         }
 
         private string FindFilename()
@@ -233,7 +146,7 @@ namespace Textfyre.UI.Entities
 
             foreach (SaveFile sf in sfs)
             {
-                if (sf.Title == _title && sf.Filename.Length > 0)
+                if (sf.Title == _title && !string.IsNullOrEmpty(sf.Filename))
                     return sf.Filename;
             }
 
@@ -242,24 +155,12 @@ namespace Textfyre.UI.Entities
 
         public string BinaryStoryFilePath
         {
-            get
-            {
-                return _dir + @"\" + _filename + ".fvq";
-            }
+            get { return _filename + ".fvq"; }
         }
 
         public static int SaveFilesCount
         {
-            get
-            {
-                IsolatedStorageFile iso = IsoFile;
-
-                if (iso.DirectoryExists(_dir) == false)
-                    return 0;
-
-                string[] files = iso.GetFileNames(_dir + @"\*" + Current.Game.GameFileName + ".fvt");
-                return files.Length;
-            }
+            get { return SaveFiles.Count; }
         }
 
         public static void DeleteOldSaveFiles()
@@ -274,33 +175,21 @@ namespace Textfyre.UI.Entities
                 }
             }
         }
-        
+
         public static List<SaveFile> SaveFiles
         {
             get
             {
                 List<SaveFile> saveFiles = new List<SaveFile>();
-                IsolatedStorageFile iso = IsoFile;
+                IsolatedStorageSettings isoSettings = IsolatedStorageSettings.ApplicationSettings;
 
-                if (iso.DirectoryExists(_dir) == false)
-                    return saveFiles;
-
-                string[] files = iso.GetFileNames(_dir + @"\*" + Current.Game.GameFileName + ".fvt");
-                foreach (string file in files)
+                foreach (var key in isoSettings.Keys)
                 {
-                    using (IsolatedStorageFile isoFile = IsoFile)
+                    if (key.ToString().EndsWith(".fvt"))
                     {
-                        using (IsolatedStorageFileStream stream =
-                        new IsolatedStorageFileStream(_dir + @"\" +file, FileMode.Open, isoFile))
-                        {
-                            using (DecompressingStream dstream = new DecompressingStream(stream))
-                            using (StreamReader reader = new StreamReader(dstream))
-                            {
-                                string js = reader.ReadToEnd();
-                                SaveFile sf = SaveFile.Deserialize(js);
-                                saveFiles.Add(sf);
-                            }
-                        }
+                        string json = isoSettings[key.ToString()].ToString();
+                        SaveFile sf = SaveFile.Deserialize(json);
+                        saveFiles.Add(sf);
                     }
                 }
 
@@ -308,16 +197,8 @@ namespace Textfyre.UI.Entities
             }
         }
 
-        public static string Serialize( SaveFile saveFile)
+        public static string Serialize(SaveFile saveFile)
         {
-            //System.Runtime.Serialization.DataContractSerializer
-            //    serializer = new System.Runtime.Serialization.DataContractSerializer(saveFile.GetType());
-            //MemoryStream ms = new MemoryStream();
-            //serializer.WriteObject(ms, saveFile);
-            //string json = Encoding.Unicode.GetString(ms.ToArray(), 0, (int)ms.Length);
-
-            //return json;
-
             System.Text.StringBuilder sb = new StringBuilder();
             sb.Append(ToParam(saveFile.Filename) + "|");
             sb.Append(ToParam(saveFile.Title) + "|");
@@ -331,19 +212,11 @@ namespace Textfyre.UI.Entities
             sb.Append(ToParam(saveFile.Theme) + "|");
             sb.Append(ToParam(saveFile.Hints) + "");
 
-
             return sb.ToString();
         }
 
         public static SaveFile Deserialize(string json)
         {
-            //SaveFile saveFile = new SaveFile();
-            //MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(json));
-            //System.Runtime.Serialization.DataContractSerializer serializer = new System.Runtime.Serialization.DataContractSerializer(saveFile.GetType());
-            //saveFile = serializer.ReadObject(ms) as SaveFile;
-            //ms.Close();
-            //return saveFile;
-
             SaveFile saveFile = new SaveFile();
             string[] parts = json.Split('|');
             if (parts.Length >= 4)
@@ -409,21 +282,12 @@ namespace Textfyre.UI.Entities
             return value.Replace("&#124;", "|");
         }
 
-        private static string _dir = Settings.SaveGameDirectory;
-        
-        public static System.IO.IsolatedStorage.IsolatedStorageFile IsoFile
-        {
-            get
-            {
-                return System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForApplication();
-            }
-        }
-        
         public static long FreeSpace
         {
             get
-            {             
-                return IsoFile.AvailableFreeSpace;
+            {
+                // Not applicable in OpenSilver
+                return 0;
             }
         }
 
@@ -431,32 +295,15 @@ namespace Textfyre.UI.Entities
         {
             get
             {
-                return IsoFile.Quota;
-            }
-        }
-
-        private static void Init()
-        {
-            System.IO.IsolatedStorage.IsolatedStorageFile isoFile = IsoFile;
-
-            if (isoFile.DirectoryExists(_dir) == false)
-            {
-                isoFile.CreateDirectory(_dir);
+                // Not applicable in OpenSilver
+                return 0;
             }
         }
 
         public static void IncreaseStorageSpace()
         {
-            try
-            {
-                long newSize = IsoFile.Quota + 1000000;
-                IsoFile.IncreaseQuotaTo(newSize);
-            }
-            catch
-            {
-                MessageBox.Show("It was not possible to increase the storage space");
-            }
+            // Not applicable in OpenSilver
+            // OpenSilver uses browser storage, which has its own limits
         }
-
     }
 }

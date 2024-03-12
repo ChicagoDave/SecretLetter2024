@@ -4,6 +4,13 @@
              xmlns:ui="clr-namespace:Textfyre.UI;assembly=Textfyre.UI"
     >
     <Grid x:Name="LayoutRoot">
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <!-- Set the desired properties for the Grid style -->
+                <Setter Property="Margin" Value="0" />
+                <!-- Add more setters for other properties as needed -->
+            </Style>
+        </Grid.Style>
         <ui:Page x:Name="StoryPage" />
     </Grid>
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -62,11 +63,14 @@ namespace Textfyre.UI.Controls.Manual
 
         private XElement RootMenu()
         {
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/Manual.xml"));
+            using (Stream stream = Utility.GetFileStream("Manual.xml"))
+            {
+                XDocument x = XDocument.Load(stream);
 
-            var rootmenu = (from menu in x.Descendants("menu") select menu).First();
+                var rootmenu = (from menu in x.Descendants("menu") select menu).First();
 
-            return rootmenu;
+                return rootmenu;
+            }
         }
 
         private void ShowItems(XElement menu)
@@ -114,59 +118,63 @@ namespace Textfyre.UI.Controls.Manual
 
             Title.Text = title;
 
-            XDocument x = XDocument.Load(Current.Application.GetResPath("GameFiles/Manual.xml"));
-            var selectedItem = (from item in x.Descendants("item") where item.Attribute("title").Value == title select item);
-            var menus = (from menu in selectedItem.Elements("menu") select menu);
-            if (menus.Count() > 0)
+            using (Stream stream = Utility.GetFileStream("Manual.xml"))
             {
-                var items = (from item in menus.First().Elements("item") select item);
-                DisplayLinks(items, false);
+                XDocument x = XDocument.Load(stream);
+
+                var selectedItem = (from item in x.Descendants("item") where item.Attribute("title").Value == title select item);
+                var menus = (from menu in selectedItem.Elements("menu") select menu);
+                if (menus.Count() > 0)
+                {
+                    var items = (from item in menus.First().Elements("item") select item);
+                    DisplayLinks(items, false);
+                }
+
+                var paragraphs = (from paragraph in selectedItem.Elements("paragraph") select paragraph);
+
+
+                foreach (var paragraph in paragraphs)
+                {
+                    TextBlock tb = new TextBlock();
+                    tb.TextWrapping = TextWrapping.Wrap;
+                    tb.HorizontalAlignment = HorizontalAlignment.Left;
+                    tb.TextAlignment = TextAlignment.Left;
+                    Current.Font.ApplyFont(Textfyre.UI.Current.Font.FontType.Main, tb);
+                    Topics.Children.Add(tb);
+                    InsertText(tb, paragraph.Value);
+
+                }
+
+                StackPanel sp = new StackPanel();
+                sp.Margin = new Thickness(0, 10, 0, 0);
+                sp.Orientation = Orientation.Horizontal;
+                sp.HorizontalAlignment = HorizontalAlignment.Center;
+
+                TextBlock tbClose = new TextBlock();
+                tbClose.TextWrapping = TextWrapping.Wrap;
+                tbClose.HorizontalAlignment = HorizontalAlignment.Left;
+                tbClose.TextAlignment = TextAlignment.Left;
+                tbClose.Text = "[BACK]    ";
+                tbClose.Cursor = Cursors.Hand;
+                tbClose.MouseLeftButtonUp += new MouseButtonEventHandler(tbClose_MouseLeftButtonUp);
+                Current.Font.ApplyFont(Textfyre.UI.Current.Font.FontType.Footer, tbClose);
+                sp.Children.Add(tbClose);
+
+
+                TextBlock tbTOC = new TextBlock();
+                tbTOC.TextWrapping = TextWrapping.Wrap;
+                tbTOC.HorizontalAlignment = HorizontalAlignment.Left;
+                tbTOC.TextAlignment = TextAlignment.Left;
+                tbTOC.Text = "[INDEX]    ";
+                tbTOC.Cursor = Cursors.Hand;
+                tbTOC.MouseLeftButtonUp += new MouseButtonEventHandler(tbTOC_MouseLeftButtonUp);
+                Current.Font.ApplyFont(Textfyre.UI.Current.Font.FontType.Footer, tbTOC);
+                sp.Children.Add(tbTOC);
+
+                sp.Children.Add(ExitTextBlock());
+
+                Topics.Children.Add(sp);
             }
-
-            var paragraphs = (from paragraph in selectedItem.Elements("paragraph") select paragraph);
-
-
-            foreach (var paragraph in paragraphs)
-            {
-                TextBlock tb = new TextBlock();
-                tb.TextWrapping = TextWrapping.Wrap;
-                tb.HorizontalAlignment = HorizontalAlignment.Left;
-                tb.TextAlignment = TextAlignment.Left;
-                Current.Font.ApplyFont(Textfyre.UI.Current.Font.FontType.Main, tb);
-                Topics.Children.Add(tb);
-                InsertText(tb, paragraph.Value);
-
-            }
-
-            StackPanel sp = new StackPanel();
-            sp.Margin = new Thickness(0, 10, 0, 0);
-            sp.Orientation = Orientation.Horizontal;
-            sp.HorizontalAlignment = HorizontalAlignment.Center;
-            
-            TextBlock tbClose = new TextBlock();
-            tbClose.TextWrapping = TextWrapping.Wrap;
-            tbClose.HorizontalAlignment = HorizontalAlignment.Left;
-            tbClose.TextAlignment = TextAlignment.Left;
-            tbClose.Text = "[BACK]    ";
-            tbClose.Cursor = Cursors.Hand;
-            tbClose.MouseLeftButtonUp += new MouseButtonEventHandler(tbClose_MouseLeftButtonUp);
-            Current.Font.ApplyFont(Textfyre.UI.Current.Font.FontType.Footer, tbClose);
-            sp.Children.Add(tbClose);
-
-
-            TextBlock tbTOC = new TextBlock();
-            tbTOC.TextWrapping = TextWrapping.Wrap;
-            tbTOC.HorizontalAlignment = HorizontalAlignment.Left;
-            tbTOC.TextAlignment = TextAlignment.Left;
-            tbTOC.Text = "[INDEX]    ";
-            tbTOC.Cursor = Cursors.Hand;
-            tbTOC.MouseLeftButtonUp += new MouseButtonEventHandler(tbTOC_MouseLeftButtonUp);
-            Current.Font.ApplyFont(Textfyre.UI.Current.Font.FontType.Footer, tbTOC);
-            sp.Children.Add(tbTOC);
-
-            sp.Children.Add(ExitTextBlock());
-
-            Topics.Children.Add(sp);
         }
 
         private void InsertText( TextBlock tb, string text )
