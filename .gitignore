@@ -1,3 +1,4 @@
 .vs/
 bin/
 obj/
+/SecretLetter.Browser/SecretLetter.Browser.csproj.user
